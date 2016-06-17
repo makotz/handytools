@@ -1,0 +1,16 @@
+<h1>Temperature Converter</h1>
+
+<%= form_tag temp_converter_path do %>
+Convert to:
+  <%= radio_button_tag(:corf, "celsius") %>
+  <%= label_tag(:corf_celsius, "Celsius") %>
+  <%= radio_button_tag(:corf, "farenheit") %>
+  <%= label_tag(:corf_farenheit, "Farenheit") %><br>
+  <%= text_field_tag :temp, nil, {placeholder: "e.g. 25"}%>
+  <%= submit_tag "Convert" %>
+<% end %>
+
+<br>
+<% if @converted %>
+<%= @converted %>
+<% end %>
