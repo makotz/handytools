@@ -4,10 +4,18 @@ class AnswersController < ApplicationController
     @answer = Answer.new answer_params
     @question = Question.find params[:question_id]
     @answer.question = @question
-    if @answer.save
-      redirect_to question_path(@question), notice: "Answer created!"
-    else
-      render "/questions/show"
+
+    respond_to do |format|
+
+      if @answer.save
+        AnswersMailer.notify_question_owner(@answer).deliver_later
+        format.html {redirect_to question_path(@question), notice: "Answer created!"}
+        # format.js {render js: "alert('Does this browswer support JS?');"}
+        format.js {render :create_success}
+      else
+        format.html {render "/questions/show"}
+        format.js {render :create_failure}
+      end
     end
   end
 
@@ -15,7 +23,11 @@ class AnswersController < ApplicationController
     @question = Question.find params[:question_id]
     @answer = Answer.find params[:id]
     @answer.destroy
-    redirect_to question_path(@question), notice: "Answer deleted"
+
+    respond_to do |format|
+      format.html { redirect_to question_path(params[:question_id]), notice: ""} 
+      format.js { render :destroy_success}
+    end
   end
 
 private

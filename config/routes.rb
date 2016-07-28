@@ -1,9 +1,33 @@
 Rails.application.routes.draw do
 
+  get "/auth/twitter", as: :sign_in_with_twitter
+  get "/auth/twitter/callback" => "callbacks#twitter"
+
+  match "/delayed_job" => DelayedJobWeb, :anchor => false, via: [:get, :post]
+
+  resources :votes
   resources :users, only: [:new, :create]
 
   resources :sessions, only: [:new, :create] do
     delete :destroy, on: :collection
+  end
+
+  # get "/api/v1/questions" => "api/v1/questions#index"
+
+  #
+  # scope :api do
+  #   scope :v1 do
+  #     resources :questions, only: [:index, :show]
+  #   end
+  # end
+  #
+  namespace :api, defaults: {format: :json} do
+    namespace :v1 do
+      resources :questions, only: [:index, :show] do
+        resources :answers, only: [:create]
+      end
+
+    end
   end
 
   resources :questions do
@@ -19,8 +43,11 @@ Rails.application.routes.draw do
 
     # this will make all the answers routes nested within 'questions' which means al the answers routes will be prepended with '/questions/:question_id'
     resources :answers, only: [:create, :destroy]
+    resources :likes, only: [:create, :destroy]
+    resources :votes, only: [:create, :update, :destroy]
   end
 
+  resources :likes, only: [:index]
   # get "/questions/new" => "questions#new",    as: :new_question
   # post "/questions"    => "questions#create", as: :questions
   # get "/questions/:id" => "questions#show",   as: :question

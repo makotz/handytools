@@ -7,6 +7,7 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+  <div class="container">
   <%= render "/layouts/navbar" %>
   <hr>
   <% if flash[:notice] %>
@@ -14,8 +15,7 @@
   <% elsif flash[:alert] %>
     <div class="flash-alert"><%= flash[:alert] %></div>
   <% end %>
-
-<%= yield %>
-
+  <%= yield %>
+  </div>
 </body>
 </html>

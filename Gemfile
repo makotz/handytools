@@ -1,5 +1,23 @@
 source 'https://rubygems.org'
 
+
+gem 'virtus'
+gem 'react-rails'
+gem 'twitter'
+gem 'omniauth-twitter'
+gem 'active_model_serializers'
+gem 'friendly_id'
+gem 'simple_form'
+gem 'bootstrap-sass', '~> 3.1.1.0'
+gem 'bootstrap-glyphicons'
+gem 'carrierwave'
+gem "mini_magick"
+gem 'fog'
+
+gem 'delayed_job_web'
+gem 'delayed_job_active_record'
+gem 'kaminari'
+gem "font-awesome-rails"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
 # Use postgresql as the database for Active Record
@@ -29,9 +47,12 @@ gem 'bcrypt', '~> 3.1.7'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
+gem 'cancancan'
 
+gem "letter_opener", :group => :development
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+gem 'rack-cors', :require => 'rack/cors'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -48,4 +69,5 @@ group :development do
   gem "rails-erd"
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+
 end

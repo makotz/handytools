@@ -1,12 +1,22 @@
 class Question < ActiveRecord::Base
-
+  attr_accessor :tweet_it
   #has_many helps us set up the association between quesiton model and the manswer model. In this case, "has_many" assumes that the answers table contain a field named "question_id" that is an integer (this is a Rails convetion).
   #The depdendent option takes values like "destroy" or "nullify"
   #'Destroy' will make Rails automatically delete associated ansswers before deleting the quesiton.
   #'Nullify' will make Rails turn 'quesiton_id' values of associated reocrds to "null'" before deleting the quesiton.
+
   has_many :answers, dependent: :destroy
   belongs_to :category
   belongs_to :user
+
+  has_many :likes, dependent: :destroy
+  has_many :liking_users, through: :likes, source: :user
+
+  has_many :votes, dependent: :destroy
+  has_many :voting_users, through: :voties, source: :user
+
+  has_many :taggings, dependent: :destroy
+  has_many :tags, through: :taggings
 
   validates(:title, {presence: {message: "must be present!"}, uniqueness: true})
 
@@ -36,6 +46,58 @@ class Question < ActiveRecord::Base
   def self.search(word)
     where("title ILIKE :word OR body ILIKE :word", {word: "%#{word}%"})
   end
+
+  def liked_by?(user)
+    likes.exists?(user: user)
+  end
+
+  def like_for(user)
+    likes.find_by_user_id user
+  end
+
+  def voted_by?(user)
+    votes.exists?(user: user)
+  end
+
+  def vote_for(user)
+    votes.find_by_user_id user
+  end
+
+  def voted_up_by?(user)
+    voted_by?(user) && vote_for(user).is_up?
+  end
+
+  def voted_down_by?(user)
+    voted_by?(user) && !vote_for(user).is_up?
+  end
+
+  def up_votes
+    votes.where(is_up: true).count
+  end
+
+  def down_votes
+    votes.where(is_up: false).count
+  end
+
+  def vote_sum
+    up_votes - down_votes
+  end
+
+  # def to_param
+  #   "{id}-#{title}".parameterize
+  # end
+
+  extend FriendlyId
+  friendly_id :title, use: [:slugged, :finders, :history]
+
+  mount_uploader :image, ImageUploader
+
+  #delegate :name, to: :category, prefix: true
+  def category_name
+    category.name
+  end
+
+  delegate :first_name, :last_name, to:  :user, prefix: true
 
   private
 

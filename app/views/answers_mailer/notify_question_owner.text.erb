@@ -1,0 +1,8 @@
+Hello <%= @owner.full_name %>,
+  You got an answer to your question:
+  Question title: <%= @question.title %>
+  Answer: <%= @answer.body %>
+  Visit your quesiton by clicking
+  <%= link_to "here", question_url(@question) %>
+  Regards,
+  Awesome Answers Team

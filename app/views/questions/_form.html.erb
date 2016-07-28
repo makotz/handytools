@@ -1,16 +1,9 @@
 <%# If @question is persisted then the "form_for" helper will make hte action submit to quesiton_path(@question) and it will make the HTTP request PATCH. %>
-<%= @question.errors.full_messages.join(", ") %>
-<%= form_for @question do |f| %>
-  <div>
-    <%= f.label :title %>
-    <%= f.text_field :title %>
-  </div>
-  <div>
-    <%= f.label :body %>
-    <%= f.text_area :body %>
-  </div>
-  <div>
-    <%= f.collection_select :category_id, Category.all, :id , :name %>
-  </div>
+<%= simple_form_for @question do |f| %>
+    <%= f.input :title %>
+    <%= f.input :body %>
+    <% if current_user.using_twitter? && !@question.persisted? %>
+      <%= f.input :tweet_it, as: :boolean %>
+    <% end %>
   <%= f.submit %>
 <% end %>
